@@ -2,6 +2,8 @@ package com.pluralsight;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Scanner;
 public class Main {
@@ -44,10 +46,12 @@ public class Main {
     }
     public void addADeposit() {  // adding the information in the correct format
         Scanner scanner = new Scanner(System.in);
-        System.out.println("Enter the date (YYYY-MM-DD) ");
-        String date = scanner.nextLine();
-        System.out.println("Enter the time (HH:MM:SS) ");
-        String time = scanner.nextLine();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("YYYY-MM-dd|HH:MM:SS");
+        String dateTime = LocalDateTime.now().format(formatter);
+       // System.out.println("Enter the date (YYYY-MM-DD) ");
+       // String date = scanner.nextLine();
+       // System.out.println("Enter the time (HH:MM:SS) ");
+      //  String time = scanner.nextLine();
         System.out.println("Enter the description ");
         String description = scanner.nextLine();
         System.out.println("Enter the vendor ");
@@ -55,11 +59,10 @@ public class Main {
         System.out.println("Enter the amount ");
         String amount = scanner.nextLine();
 
-        String transaction = date + "|" + time + "|" + description + "|" + vendor + "|$" + amount;
+        String transaction = dateTime + "|" + description + "|" + vendor + "|$" + amount;
         String fileName = "src/transactions.csv";
         // Youtube
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, true)))
-        {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, true))) {
             writer.write(transaction);
             writer.newLine();
             System.out.println("Deposit successful! ");
@@ -72,18 +75,21 @@ public class Main {
     }
     public void makeAPayment() { // Doing exact same thing as adding a deposit
     Scanner scanner = new Scanner(System.in);
-        System.out.println("Enter the date (YYYY-MM-DD) ");
-        String date = scanner.nextLine();
-        System.out.println("Enter the time (HH:MM:SS) ");
-        String time = scanner.nextLine();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("YYYY-MM-dd|HH:MM:SS");
+        String dateTime = LocalDateTime.now().format(formatter);
+       // System.out.println("Enter the date (YYYY-MM-DD) ");
+       // String date = scanner.nextLine();
+      //  System.out.println("Enter the time (HH:MM:SS) ");
+       // String time = scanner.nextLine();
         System.out.println("Enter the description ");
         String description = scanner.nextLine();
         System.out.println("Enter the vendor ");
         String vendor = scanner.nextLine();
         System.out.println("Enter the amount ");
         String amount = scanner.nextLine();
+        // in order to transfer info to file
         // chat gpt told me i needed to string transaction bc wasn't working but i switched it
-        String transaction = date + "|" + time + "|" + description + "|" + vendor + "|$" + amount;
+        String transaction = dateTime + "|" + description + "|" + vendor + "|-$" + amount;
         String fileName = "src/transactions.csv";
         // Youtube
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, true)))
@@ -98,7 +104,6 @@ public class Main {
             e.printStackTrace();
         }
     }
-
     public void displayTheLedger() {
         Scanner scanner = new Scanner(System.in);
         boolean choosingExtention = true; // choosing an option to it running
@@ -130,14 +135,14 @@ public class Main {
         }
     }
     public void displayTransactions() {
-
+        Scanner scanner = new Scanner(System.in);
     }
 
     public void displayDeposits() {
-
+        Scanner scanner = new Scanner(System.in);
     }
     public void displayPayments() {
-
+        Scanner scanner = new Scanner(System.in);
     }
     public void displayReports() {
 
