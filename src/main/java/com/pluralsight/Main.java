@@ -175,7 +175,7 @@ public class Main {
                 System.out.println("3) Year to date: ");
                 System.out.println("4) Previous year: ");
                 System.out.println("5) Search by vendor ");
-                System.out.println("0) Back to report page ");
+                System.out.println("0) Back to ledger page ");
                 System.out.println("H) Back to home page ");
                 String command = scanner.nextLine();
 
@@ -223,7 +223,7 @@ public class Main {
 
     }
     public void displaySearchByVendor() {
-        Scanner scanner = new Scanner(System.in);
+        Scanner scanner = new Scanner(System.in);  // doing same thing as before copy paste and update info
         System.out.println("Enter vendor: ");
         String vendor = scanner.nextLine();
         try (BufferedReader reader = new BufferedReader(new FileReader("src/transactions.csv"))) {
@@ -238,7 +238,7 @@ public class Main {
             System.out.println("Error - try again. ");
             e.printStackTrace();
         }
-    } // doing same thing as before
+    }
     }
 
 
