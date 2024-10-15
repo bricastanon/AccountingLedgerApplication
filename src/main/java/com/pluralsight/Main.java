@@ -1,7 +1,5 @@
 package com.pluralsight;
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -12,12 +10,12 @@ public class Main {
         ArrayList<Transactions> transactions = new ArrayList<Transactions>(); // create class for transactions
         String fileName = "src/transactions.csv"; // Kept up here cause the information wasn't adding
         Main app = new Main();  // the only thing that got it to not cause an error what chatgpt told me to add
-        app.start();           // apparently it creates an instance of Main and calls the start method
+        app.homeScreen();           // apparently it creates an instance of Main and calls the start method
     }
-        public void start() {
-            boolean choosingExtension = true;// choosing an option to it running
+        public void homeScreen() {
+            boolean choosingHome = true;// choosing an option to it running
             Scanner scanner = new Scanner(System.in); // import scanner
-        while (choosingExtension) {  // allows user to see the options
+        while (choosingHome) {  // allows user to see the options
             System.out.println("Welcome! ");
             System.out.println("D) Add Deposit ");
             System.out.println("P) Make Payment (Debit) ");
@@ -36,7 +34,7 @@ public class Main {
                     displayTheLedger();
                     break;
                 case "X":
-                    choosingExtension = false; // bc im not choosing anymore options - exiting
+                    choosingHome = false; // bc im not choosing anymore options - exiting
                     break;
                 default: // message for invalid option
                     System.out.println("Please try again. Invalid command. ");
@@ -48,10 +46,6 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("YYYY-MM-dd|HH:MM:SS");
         String dateTime = LocalDateTime.now().format(formatter);
-       // System.out.println("Enter the date (YYYY-MM-DD) ");
-       // String date = scanner.nextLine();
-       // System.out.println("Enter the time (HH:MM:SS) ");
-      //  String time = scanner.nextLine();
         System.out.println("Enter the description ");
         String description = scanner.nextLine();
         System.out.println("Enter the vendor ");
@@ -77,18 +71,13 @@ public class Main {
     Scanner scanner = new Scanner(System.in);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("YYYY-MM-dd|HH:MM:SS");
         String dateTime = LocalDateTime.now().format(formatter);
-       // System.out.println("Enter the date (YYYY-MM-DD) ");
-       // String date = scanner.nextLine();
-      //  System.out.println("Enter the time (HH:MM:SS) ");
-       // String time = scanner.nextLine();
         System.out.println("Enter the description ");
         String description = scanner.nextLine();
         System.out.println("Enter the vendor ");
         String vendor = scanner.nextLine();
         System.out.println("Enter the amount ");
         String amount = scanner.nextLine();
-        // in order to transfer info to file
-        // chat gpt told me i needed to string transaction bc wasn't working but i switched it
+        // in order to transfer info to file - chat
         String transaction = dateTime + "|" + description + "|" + vendor + "|-$" + amount;
         String fileName = "src/transactions.csv";
         // Youtube
@@ -106,7 +95,7 @@ public class Main {
     }
     public void displayTheLedger() {
         Scanner scanner = new Scanner(System.in);
-        boolean choosingExtention = true; // choosing an option to it running
+        boolean choosingLedger = true; // choosing an option to it running
         System.out.println("Ledger Options: ");
         System.out.println("A) Display transactions ");
         System.out.println("D) Display deposits ");
@@ -128,36 +117,73 @@ public class Main {
                 displayReports();
                 break;
             case "H":
-                choosingExtention = false; // bc im not choosing anymore options - exiting
+                choosingLedger = false; // bc im not choosing anymore options - exiting
                 break;
             default:
                 System.out.println("Please try again. Invalid command. ");
         }
     }
     public void displayTransactions() {
+        // pulling the file and all transactions
+        try (BufferedReader reader = new BufferedReader(new FileReader("src/transactions.csv"))) {
+            String line;
+            while ((line = reader.readLine()) != null) { // assigns then reads the called items
+                System.out.println(line); }    // ^ null is to make sure there are no more line to read
+        }
+        catch (IOException e)
+        {
+            System.out.println("Error - try again. ");
+            e.printStackTrace();
+        }
+    }
+        public void displayDeposits() {
+            try (BufferedReader reader = new BufferedReader(new FileReader("src/transactions.csv"))) {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    if (line.contains("|$") && !line.contains("|-$")) {
+                        System.out.println(line); }
+                }
+            }
+            catch (IOException e)
+            {
+                System.out.println("Error - try again.  ");
+                e.printStackTrace();
+            }
+        }
+        public void displayPayments() {
+            try (BufferedReader reader = new BufferedReader(new FileReader("src/transactions.csv"))) {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    if (line.contains("|-$")) {
+                        System.out.println(line); }
+                }
+            }
+            catch (IOException e)
+            {
+                System.out.println("Error - try again. ");
+                e.printStackTrace();
+            }
+        }
+        public void displayReports() {
         Scanner scanner = new Scanner(System.in);
+        boolean choosingReport = true;
+        while (choosingReport) {
+            System.out.println(" Reports: ");
+            System.out.println("1) Month to date: ");
+            System.out.println("2) Previous Month: ");
+            System.out.println("3) Year to date: ");
+            System.out.println("4) Previous year: ");
+            System.out.println("5) Search by vendor ");
+            System.out.println("0) Back to report page ");
+            System.out.println("H) Back to home page ");
+            String extension3 = scanner.nextLine();
+
+        }
+        }
     }
 
-    public void displayDeposits() {
-        Scanner scanner = new Scanner(System.in);
-    }
-    public void displayPayments() {
-        Scanner scanner = new Scanner(System.in);
-    }
-    public void displayReports() {
-
-    }
 
 
 
 
-      //  System.out.println(" Reports: ");
-      //  System.out.println("1) Month to date: ");
-      //  System.out.println("2) Previous Month: ");
-      //  System.out.println("3) Year to date: ");
-     //   System.out.println("4) Previous year: ");
-     //   System.out.println("5) Search by vendor ");
-      //  System.out.println("0) Back to report page ");
-     //   System.out.println("H) Back to home page ");
-      //  String extension3 = scanner.nextLine();
-    }
+
