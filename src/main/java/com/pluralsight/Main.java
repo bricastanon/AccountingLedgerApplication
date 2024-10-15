@@ -1,5 +1,6 @@
 package com.pluralsight;
 import java.io.*;
+import java.sql.SQLOutput;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -136,11 +137,11 @@ public class Main {
             e.printStackTrace();
         }
     }
-        public void displayDeposits() {
+    public void displayDeposits() {
             try (BufferedReader reader = new BufferedReader(new FileReader("src/transactions.csv"))) {
                 String line;
-                while ((line = reader.readLine()) != null) {
-                    if (line.contains("|$") && !line.contains("|-$")) {
+                while ((line = reader.readLine()) != null) { // assigns then reads the called items
+                    if (line.contains("|$") != line.contains("|-$")) { // specifically asking for deposits and leaving out payments
                         System.out.println(line); }
                 }
             }
@@ -154,7 +155,7 @@ public class Main {
             try (BufferedReader reader = new BufferedReader(new FileReader("src/transactions.csv"))) {
                 String line;
                 while ((line = reader.readLine()) != null) {
-                    if (line.contains("|-$")) {
+                    if (line.contains("|-$")) { // specifically asking for payment
                         System.out.println(line); }
                 }
             }
@@ -163,23 +164,81 @@ public class Main {
                 System.out.println("Error - try again. ");
                 e.printStackTrace();
             }
-        }
+        } // doing same thing as before
         public void displayReports() {
-        Scanner scanner = new Scanner(System.in);
-        boolean choosingReport = true;
-        while (choosingReport) {
-            System.out.println(" Reports: ");
-            System.out.println("1) Month to date: ");
-            System.out.println("2) Previous Month: ");
-            System.out.println("3) Year to date: ");
-            System.out.println("4) Previous year: ");
-            System.out.println("5) Search by vendor ");
-            System.out.println("0) Back to report page ");
-            System.out.println("H) Back to home page ");
-            String extension3 = scanner.nextLine();
+            Scanner scanner = new Scanner(System.in);
+            boolean choosingReport = true;
+            while (choosingReport) {
+                System.out.println(" Reports: ");
+                System.out.println("1) Month to date: ");
+                System.out.println("2) Previous Month: ");
+                System.out.println("3) Year to date: ");
+                System.out.println("4) Previous year: ");
+                System.out.println("5) Search by vendor ");
+                System.out.println("0) Back to report page ");
+                System.out.println("H) Back to home page ");
+                String command = scanner.nextLine();
 
+                switch (command) {
+                    case "1":
+                        displayMonthToDate();
+                        break;
+                    case "2":
+                        displayPreviousMonth();
+                        break;
+                    case "3":
+                        displayYearToDate();
+                        break;
+                    case "4":
+                        displayPreviousYear();
+                        break;
+                    case "5":
+                        displaySearchByVendor();
+                        break;
+                    case "0":
+                        displayTheLedger();
+                        choosingReport = false; // exiting not choosing anymore
+                        break;
+                    case "H":
+                        homeScreen(); // same thing but add this
+                        choosingReport = false; // exiting not choosing anymore
+                        break;
+                    default:
+                        System.out.println("Please try again. Invalid command. ");
+
+                }
+            }
         }
+
+    public void displayMonthToDate() {
+
+    }
+    public void displayPreviousMonth() {
+
+    }
+    public void displayYearToDate() {
+
+    }
+    public void displayPreviousYear() {
+
+    }
+    public void displaySearchByVendor() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Enter vendor: ");
+        String vendor = scanner.nextLine();
+        try (BufferedReader reader = new BufferedReader(new FileReader("src/transactions.csv"))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                if (line.contains(vendor)) { // specifically asking for vendor
+                    System.out.println(line); }
+            }
         }
+        catch (IOException e)
+        {
+            System.out.println("Error - try again. ");
+            e.printStackTrace();
+        }
+    } // doing same thing as before
     }
 
 
