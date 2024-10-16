@@ -4,6 +4,7 @@ import java.sql.SQLOutput;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -16,7 +17,6 @@ public class Main {
         Main app = new Main();  // the only thing that got it to not cause an error what chatgpt told me to add
         app.homeScreen();           // apparently it creates an instance of Main and calls the start method
     }
-
     public void homeScreen() {
         boolean choosingHome = true;// choosing an option to it running
         Scanner scanner = new Scanner(System.in); // import scanner
@@ -42,12 +42,9 @@ public class Main {
                     choosingHome = false; // bc im not choosing anymore options - exiting
                     break;
                 default: // message for invalid option
-                    System.out.println("Please try again. Invalid command. ");
-            }
-        }
-        System.out.println("Thank you, goodbye! ");
+                    System.out.println("Please try again. Invalid command. "); }
+        } System.out.println("Thank you, goodbye! ");
     }
-
     public void addADeposit() {  // adding the information in the correct format
         Scanner scanner = new Scanner(System.in);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("YYYY-MM-dd|HH:MM:SS");
@@ -58,7 +55,6 @@ public class Main {
         String vendor = scanner.nextLine();
         System.out.println("Enter the amount ");
         String amount = scanner.nextLine();
-
         String transaction = dateTime + "|" + description + "|" + vendor + "|$" + amount;
         String fileName = "src/transactions.csv";
         // Youtube
@@ -68,10 +64,8 @@ public class Main {
             System.out.println("Deposit successful! ");
         } catch (IOException e) {
             System.out.println("Error making deposit  ");
-            e.printStackTrace();
-        }
+            e.printStackTrace(); }
     }
-
     public void makeAPayment() { // Doing exact same thing as adding a deposit
         Scanner scanner = new Scanner(System.in);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("YYYY-MM-dd|HH:MM:SS");
@@ -92,10 +86,8 @@ public class Main {
             System.out.println("Payment successful! ");
         } catch (IOException e) {
             System.out.println("Error making payment  ");
-            e.printStackTrace();
-        }
+            e.printStackTrace(); }
     }
-
     public void displayTheLedger() {
         Scanner scanner = new Scanner(System.in);
         boolean choosingLedger = true; // choosing an option to it running
@@ -123,10 +115,8 @@ public class Main {
                 choosingLedger = false; // bc im not choosing anymore options - exiting
                 break;
             default:
-                System.out.println("Please try again. Invalid command. ");
-        }
+                System.out.println("Please try again. Invalid command. "); }
     }
-
     public void displayTransactions() {
         // pulling the file and all transactions
         try (BufferedReader reader = new BufferedReader(new FileReader("src/transactions.csv"))) {
@@ -139,35 +129,28 @@ public class Main {
             e.printStackTrace();
         }
     }
-
     public void displayDeposits() {
         try (BufferedReader reader = new BufferedReader(new FileReader("src/transactions.csv"))) {
             String line;
             while ((line = reader.readLine()) != null) { // assigns then reads the called items
                 if (line.contains("|") != line.contains("|-$")) { // specifically asking for deposits and leaving out payments
-                    System.out.println(line);
-                }
+                    System.out.println(line); }
             }
         } catch (IOException e) {
             System.out.println("Error - try again.  ");
-            e.printStackTrace();
-        }
+            e.printStackTrace(); }
     }
-
     public void displayPayments() {
         try (BufferedReader reader = new BufferedReader(new FileReader("src/transactions.csv"))) {
             String line;
-            while ((line = reader.readLine()) != null) {
+            while ((line = reader.readLine()) != null) { // gonna pull line and stop when theres no more value
                 if (line.contains("|-$")) { // specifically asking for payment
-                    System.out.println(line);
-                }
+                    System.out.println(line); }
             }
         } catch (IOException e) {
             System.out.println("Error - try again. ");
-            e.printStackTrace();
-        }
+            e.printStackTrace(); }
     } // doing same thing as before
-
     public void displayReports() {
         Scanner scanner = new Scanner(System.in);
         boolean choosingReport = true;
@@ -206,64 +189,36 @@ public class Main {
                     choosingReport = false; // exiting not choosing anymore
                     break;
                 default:
-                    System.out.println("Please try again. Invalid command. ");
-            }}
+                    System.out.println("Please try again. Invalid command. "); }
+        }
     }
     public void displayMonthToDate() {
-        LocalDate today = LocalDate.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        Map<String, StringBuilder> monthTransactions = new HashMap<>();
-        try (BufferedReader reader = new BufferedReader(new FileReader("src/transactions.csv"))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                String[] parts = line.split("\\|");  // this call all info while splitting it
-                if (parts.length == 5) { // makes sure its split into 5 "|"
-                    LocalDate transactionDate = LocalDate.parse(parts[0], formatter); // converting string format to localdate
-                    if (!transactionDate.isAfter(today)) {  // includes from today or previous
-                        String monthYear = transactionDate.getMonth() + " " + transactionDate.getYear();
-                        monthTransactions.putIfAbsent(monthYear, new StringBuilder()); // creating month if not there
-                        monthTransactions.get(monthYear).append(line).append("\n"); // creates transaction for month plus year
-                    }}
-            }
-            for (Map.Entry<String, StringBuilder> entry : monthTransactions.entrySet()) { // printing by each month
-                System.out.println("Transaction for " + entry.getKey() + ":"); // gathers each pairs per month
-                System.out.println(entry.getValue().toString()); }
-        } catch (IOException e) {
-            System.out.println("Error reading transactions");
-            e.printStackTrace();
-        }
+        String fileName = "src/transactions.csv";
+        Transactions t = new Transactions(fileName);
+        t.displayMonthToDate();
     }
-    public void displayPreviousMonth() {
-        LocalDate today = LocalDate.now();
-        
+    public void displayPreviousMonth() { // Moved to class - too much
+       String fileName = "src/transactions.csv";
+       Transactions t = new Transactions(fileName);
+       t.displayPreviousMonth();
     }
-
     public void displayYearToDate() {
-
-
+        String fileName = "src/transactions.csv";
+        Transactions t = new Transactions(fileName);
+        t.displayYearToDate();
     }
-
     public void displayPreviousYear() {
-
+        String fileName = "src/transactions.csv";
+        Transactions t = new Transactions(fileName);
+        t.displayPreviousYear();
     }
-
     public void displaySearchByVendor() {
-        Scanner scanner = new Scanner(System.in);  // doing same thing as before copy paste and update info
-        System.out.println("Enter vendor: ");
-        String vendor = scanner.nextLine();
-        try (BufferedReader reader = new BufferedReader(new FileReader("src/transactions.csv"))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                if (line.contains(vendor)) { // specifically asking for vendor
-                    System.out.println(line);
-                }
-            }
-        } catch (IOException e) {
-            System.out.println("Error - try again. ");
-            e.printStackTrace();
-        }
+        String fileName = "src/transactions.csv";
+        Transactions t = new Transactions(fileName);
+        t.displaySearchByVendor();
     }
-}
+    }
+
 
 
 
