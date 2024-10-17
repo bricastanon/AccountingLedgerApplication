@@ -11,12 +11,11 @@ public class Main {
             userInputPassword = scanner.nextLine();
         } while (!userInputPassword.equals(correctPassword));
         System.out.println("Access granted. Welcome!");
-
         // Creating the file:
         ArrayList<Transactions> transactions = new ArrayList<Transactions>(); // create class for transactions
         String fileName = "src/transactions.csv"; // Kept up here cause the information wasn't adding
         Main app = new Main();  // the only thing that got it to not cause an error what chatgpt told me to add
-        app.homeScreen();           // apparently it creates an instance of Main and calls the start method
+        app.homeScreen();           // it creates an instance of Main and calls the start method
     }
     public void homeScreen() {
         boolean choosingHome = true;// choosing an option to it running

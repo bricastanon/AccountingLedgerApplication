@@ -25,7 +25,7 @@ public class Transactions {
         String amount = scanner.nextLine();
         String transaction = dateTime + "|" + description + "|" + vendor + "|$" + amount;
         String fileName = "src/transactions.csv";
-        // Youtube
+        // Youtube - tried so mnay different ways wouldn't work until I appended true (to add to the existing file w/o deleting old info
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, true))) {
             writer.write(transaction);
             writer.newLine();
@@ -61,9 +61,9 @@ public class Transactions {
     public void displayTransactions() {
         // pulling the file and all transactions
         try (BufferedReader reader = new BufferedReader(new FileReader("src/transactions.csv"))) {
-            String line;
-            while ((line = reader.readLine()) != null) { // assigns then reads the called items
-                System.out.println(line);
+            String transaction;
+            while ((transaction = reader.readLine()) != null) { // assigns then reads the called items
+                System.out.println(transaction);
             }    // ^ null is to make sure there are no more line to read
         } catch (IOException e) {
             System.out.println("Error - try again. ");
@@ -72,10 +72,10 @@ public class Transactions {
     }
     public void displayDeposits() {
         try (BufferedReader reader = new BufferedReader(new FileReader("src/transactions.csv"))) {
-            String line;
-            while ((line = reader.readLine()) != null) { // assigns then reads the called items in while
-                if (line.contains("|") != line.contains("|-$")) { // specifically asking for deposits and leaving out payments
-                    System.out.println(line); }
+            String transaction;
+            while ((transaction = reader.readLine()) != null) { // assigns then reads the called items in while
+                if (transaction.contains("|") != transaction.contains("|-$")) { // specifically asking for deposits and leaving out payments
+                    System.out.println(transaction); }
             }
         } catch (IOException e) {
             System.out.println("Error - try again.  ");
@@ -83,10 +83,10 @@ public class Transactions {
     }
     public void displayPayments() {
         try (BufferedReader reader = new BufferedReader(new FileReader("src/transactions.csv"))) {
-            String line;
-            while ((line = reader.readLine()) != null) { // gonna pull line and stop when theres no more value
-                if (line.contains("|-$")) { // specifically asking for payment
-                    System.out.println(line); }
+            String transaction;
+            while ((transaction = reader.readLine()) != null) { // gonna pull line and stop when theres no more value
+                if (transaction.contains("|-$")) { // specifically asking for payment
+                    System.out.println(transaction); }
             }
         } catch (IOException e) {
             System.out.println("Error - try again. ");
@@ -98,25 +98,25 @@ public class Transactions {
         LocalDate today = LocalDate.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         // building Month Year value in String Builder then stores both in Maps to get "October 2024"
-        Map<String, StringBuilder> monthTransactions = new HashMap<>(); // **will only work with the layout i want using map
+        Map<String, StringBuilder> monthTransactions = new HashMap<>(); // **will only work with the layout I want using map
         try (BufferedReader reader = new BufferedReader(new FileReader("src/transactions.csv"))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                String[] info = line.split("\\|");  // this call all info while splitting it
+            String transaction;
+            while ((transaction = reader.readLine()) != null) {
+                String[] info = transaction.split("\\|");  // this call all info while splitting it
                 if (info.length == 5) { // makes sure its split into 5 "|"
                     LocalDate transactionDate = LocalDate.parse(info[0], formatter); // converting string format to localdate
                     if (!transactionDate.isAfter(today)) {  // includes from today or previous
                         String monthYear = transactionDate.getMonth() + " " + transactionDate.getYear();
                         monthTransactions.putIfAbsent(monthYear, new StringBuilder()); // creating month if not there
-                        monthTransactions.get(monthYear).append(line).append("\n"); // creates transaction for month plus year
+                        monthTransactions.get(monthYear).append(transaction).append("\n"); // creates transaction for month plus year
                     }
                 }
             }
             for (Map.Entry<String, StringBuilder> entry : monthTransactions.entrySet()) { // printing by each month
-                System.out.println("Transaction for " + entry.getKey() + ":"); // gathers each pairs per month
+                System.out.println("Transaction for " + entry.getKey()); // gathers each pairs per month
                 System.out.println(entry.getValue().toString());
             }
-        } catch (IOException e) {
+        }   catch (IOException e) {
             System.out.println("Error with file ");
             e.printStackTrace();
         }
@@ -144,11 +144,11 @@ public class Transactions {
                         System.out.println("Invalid entry " + info[0]); }
                 }
             }
-             if (previousMonthTransactions.length() > 0) {   // output
-                System.out.println("Transactions for " + firstOfPreviousMonth.getMonth() + " " + firstOfPreviousMonth.getYear() + ":"); // getting month and year
+            if (previousMonthTransactions.length() > 0) {   // output
+                System.out.println("Transactions for " + firstOfPreviousMonth.getMonth() + " " + firstOfPreviousMonth.getYear()); // getting month and year
                 System.out.println(previousMonthTransactions.toString());
             } else {
-                System.out.println("No previous month transactions " + firstOfPreviousMonth.getMonth() + " " + firstOfPreviousMonth.getYear() + "."); }
+                System.out.println("No previous month transactions " + firstOfPreviousMonth.getMonth() + " " + firstOfPreviousMonth.getYear()); }
         }
         catch (IOException e) {
             System.out.println("Error with file ");
@@ -174,7 +174,7 @@ public class Transactions {
                 }
             }
             for (Map.Entry<Integer, StringBuilder> entry : yearTransactions.entrySet()) {  // Output
-                System.out.println("Transactions for " + entry.getKey() + ":");
+                System.out.println("Transactions for " + entry.getKey());
                 System.out.println(entry.getValue().toString());
             }
         } catch (IOException e) {
