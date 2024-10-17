@@ -1,16 +1,17 @@
 package com.pluralsight;
-import java.io.*;
-import java.sql.SQLOutput;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Scanner;
 public class Main {
     public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        String correctPassword = "mu";
+        String userInputPassword;
+        do {
+            System.out.print("Enter your password: ");
+            userInputPassword = scanner.nextLine();
+        } while (!userInputPassword.equals(correctPassword));
+        System.out.println("Access granted. Welcome!");
+
         // Creating the file:
         ArrayList<Transactions> transactions = new ArrayList<Transactions>(); // create class for transactions
         String fileName = "src/transactions.csv"; // Kept up here cause the information wasn't adding
@@ -21,7 +22,7 @@ public class Main {
         boolean choosingHome = true;// choosing an option to it running
         Scanner scanner = new Scanner(System.in); // import scanner
         while (choosingHome) {  // allows user to see the options
-            System.out.println("Welcome! ");
+            System.out.println("---Home Screen--- ");
             System.out.println("D) Add Deposit ");
             System.out.println("P) Make Payment (Debit) ");
             System.out.println("L) Display Ledger ");
@@ -46,47 +47,14 @@ public class Main {
         } System.out.println("Thank you, goodbye! ");
     }
     public void addADeposit() {  // adding the information in the correct format
-        Scanner scanner = new Scanner(System.in);
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("YYYY-MM-dd|HH:MM:SS");
-        String dateTime = LocalDateTime.now().format(formatter);
-        System.out.println("Enter the description ");
-        String description = scanner.nextLine();
-        System.out.println("Enter the vendor ");
-        String vendor = scanner.nextLine();
-        System.out.println("Enter the amount ");
-        String amount = scanner.nextLine();
-        String transaction = dateTime + "|" + description + "|" + vendor + "|$" + amount;
         String fileName = "src/transactions.csv";
-        // Youtube
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, true))) {
-            writer.write(transaction);
-            writer.newLine();
-            System.out.println("Deposit successful! ");
-        } catch (IOException e) {
-            System.out.println("Error making deposit  ");
-            e.printStackTrace(); }
+        Transactions t = new Transactions(fileName);
+        t.addADeposit();
     }
     public void makeAPayment() { // Doing exact same thing as adding a deposit
-        Scanner scanner = new Scanner(System.in);
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("YYYY-MM-dd|HH:MM:SS");
-        String dateTime = LocalDateTime.now().format(formatter);
-        System.out.println("Enter the description ");
-        String description = scanner.nextLine();
-        System.out.println("Enter the vendor ");
-        String vendor = scanner.nextLine();
-        System.out.println("Enter the amount ");
-        String amount = scanner.nextLine();
-        // in order to transfer info to file - chat
-        String transaction = dateTime + "|" + description + "|" + vendor + "|-$" + amount;
         String fileName = "src/transactions.csv";
-        // Youtube
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, true))) {
-            writer.write(transaction);
-            writer.newLine();
-            System.out.println("Payment successful! ");
-        } catch (IOException e) {
-            System.out.println("Error making payment  ");
-            e.printStackTrace(); }
+        Transactions t = new Transactions(fileName);
+        t.makeAPayment();
     }
     public void displayTheLedger() {
         Scanner scanner = new Scanner(System.in);
@@ -118,39 +86,21 @@ public class Main {
                 System.out.println("Please try again. Invalid command. "); }
     }
     public void displayTransactions() {
-        // pulling the file and all transactions
-        try (BufferedReader reader = new BufferedReader(new FileReader("src/transactions.csv"))) {
-            String line;
-            while ((line = reader.readLine()) != null) { // assigns then reads the called items
-                System.out.println(line);
-            }    // ^ null is to make sure there are no more line to read
-        } catch (IOException e) {
-            System.out.println("Error - try again. ");
-            e.printStackTrace();
-        }
+        String fileName = "src/transactions.csv";
+        Transactions t = new Transactions(fileName);
+        t.displayTransactions();
     }
+
     public void displayDeposits() {
-        try (BufferedReader reader = new BufferedReader(new FileReader("src/transactions.csv"))) {
-            String line;
-            while ((line = reader.readLine()) != null) { // assigns then reads the called items
-                if (line.contains("|") != line.contains("|-$")) { // specifically asking for deposits and leaving out payments
-                    System.out.println(line); }
-            }
-        } catch (IOException e) {
-            System.out.println("Error - try again.  ");
-            e.printStackTrace(); }
+        String fileName = "src/transactions.csv";
+        Transactions t = new Transactions(fileName);
+        t.displayDeposits();
     }
     public void displayPayments() {
-        try (BufferedReader reader = new BufferedReader(new FileReader("src/transactions.csv"))) {
-            String line;
-            while ((line = reader.readLine()) != null) { // gonna pull line and stop when theres no more value
-                if (line.contains("|-$")) { // specifically asking for payment
-                    System.out.println(line); }
-            }
-        } catch (IOException e) {
-            System.out.println("Error - try again. ");
-            e.printStackTrace(); }
-    } // doing same thing as before
+        String fileName = "src/transactions.csv";
+        Transactions t = new Transactions(fileName);
+        t.displayPayments();
+    }
     public void displayReports() {
         Scanner scanner = new Scanner(System.in);
         boolean choosingReport = true;

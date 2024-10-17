@@ -1,32 +1,110 @@
 package com.pluralsight;
-
 import java.io.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.time.temporal.TemporalAdjuster;
 import java.time.temporal.TemporalAdjusters;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
-
 public class Transactions {
-    public String filePath;
-
-    public Transactions(String filePath) {
-        this.filePath = filePath;
+    public String storeFile;
+    public Transactions(String storeFile) {
+        this.storeFile = storeFile;
+    }
+    public void addADeposit() {  // adding the information in the correct format
+        Scanner scanner = new Scanner(System.in);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("YYYY-MM-dd|HH:MM:SS");
+        String dateTime = LocalDateTime.now().format(formatter);
+        System.out.println("Enter the description ");
+        String description = scanner.nextLine();
+        System.out.println("Enter the vendor ");
+        String vendor = scanner.nextLine();
+        System.out.println("Enter the amount ");
+        String amount = scanner.nextLine();
+        String transaction = dateTime + "|" + description + "|" + vendor + "|$" + amount;
+        String fileName = "src/transactions.csv";
+        // Youtube
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, true))) {
+            writer.write(transaction);
+            writer.newLine();
+            System.out.println("Deposit successful! ");
+        } catch (IOException e) {
+            System.out.println("Error making deposit  ");
+            e.printStackTrace(); }
+    }
+    public void makeAPayment() { // Doing exact same thing as adding a deposit
+        Scanner scanner = new Scanner(System.in);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("YYYY-MM-dd|HH:MM:SS");
+        String dateTime = LocalDateTime.now().format(formatter);
+        System.out.println("Enter the description ");
+        String description = scanner.nextLine();
+        System.out.println("Enter the vendor ");
+        String vendor = scanner.nextLine();
+        System.out.println("Enter the amount ");
+        String amount = scanner.nextLine();
+        // in order to transfer info to file - chat
+        String transaction = dateTime + "|" + description + "|" + vendor + "|-$" + amount;
+        String fileName = "src/transactions.csv";
+        // Youtube
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, true))) {
+            writer.write(transaction);
+            writer.newLine();
+            System.out.println("Payment successful! ");
+        } catch (IOException e) {
+            System.out.println("Error making payment  ");
+            e.printStackTrace(); }
     }
 
+    ///// Ledger Methods
+    public void displayTransactions() {
+        // pulling the file and all transactions
+        try (BufferedReader reader = new BufferedReader(new FileReader("src/transactions.csv"))) {
+            String line;
+            while ((line = reader.readLine()) != null) { // assigns then reads the called items
+                System.out.println(line);
+            }    // ^ null is to make sure there are no more line to read
+        } catch (IOException e) {
+            System.out.println("Error - try again. ");
+            e.printStackTrace();
+        }
+    }
+    public void displayDeposits() {
+        try (BufferedReader reader = new BufferedReader(new FileReader("src/transactions.csv"))) {
+            String line;
+            while ((line = reader.readLine()) != null) { // assigns then reads the called items in while
+                if (line.contains("|") != line.contains("|-$")) { // specifically asking for deposits and leaving out payments
+                    System.out.println(line); }
+            }
+        } catch (IOException e) {
+            System.out.println("Error - try again.  ");
+            e.printStackTrace(); }
+    }
+    public void displayPayments() {
+        try (BufferedReader reader = new BufferedReader(new FileReader("src/transactions.csv"))) {
+            String line;
+            while ((line = reader.readLine()) != null) { // gonna pull line and stop when theres no more value
+                if (line.contains("|-$")) { // specifically asking for payment
+                    System.out.println(line); }
+            }
+        } catch (IOException e) {
+            System.out.println("Error - try again. ");
+            e.printStackTrace(); }
+    } // doing same thing as before
+
+    //// Reports methods
     public void displayMonthToDate() {
         LocalDate today = LocalDate.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        Map<String, StringBuilder> monthTransactions = new HashMap<>(); // will only work using map
+        // building Month Year value in String Builder then stores both in Maps to get "October 2024"
+        Map<String, StringBuilder> monthTransactions = new HashMap<>(); // **will only work with the layout i want using map
         try (BufferedReader reader = new BufferedReader(new FileReader("src/transactions.csv"))) {
             String line;
             while ((line = reader.readLine()) != null) {
-                String[] parts = line.split("\\|");  // this call all info while splitting it
-                if (parts.length == 5) { // makes sure its split into 5 "|"
-                    LocalDate transactionDate = LocalDate.parse(parts[0], formatter); // converting string format to localdate
+                String[] info = line.split("\\|");  // this call all info while splitting it
+                if (info.length == 5) { // makes sure its split into 5 "|"
+                    LocalDate transactionDate = LocalDate.parse(info[0], formatter); // converting string format to localdate
                     if (!transactionDate.isAfter(today)) {  // includes from today or previous
                         String monthYear = transactionDate.getMonth() + " " + transactionDate.getYear();
                         monthTransactions.putIfAbsent(monthYear, new StringBuilder()); // creating month if not there
@@ -50,24 +128,24 @@ public class Transactions {
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         StringBuilder previousMonthTransactions = new StringBuilder();
         try (BufferedReader reader = new BufferedReader(new FileReader("src/transactions.csv"))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                String[] parts = line.split("\\|");
-                if (parts.length == 5) {
+            String transaction;
+            while ((transaction = reader.readLine()) != null) {
+                String[] info = transaction.split("\\|");
+                if (info.length == 5) {
                     try {
-                        LocalDate transactionDate = LocalDate.parse(parts[0], dateFormatter);
+                        LocalDate transactionDate = LocalDate.parse(info[0], dateFormatter);
 
                         // Check if the transaction is from the previous month
                         if (transactionDate.isAfter(firstOfPreviousMonth.minusDays(1)) &&
                                 transactionDate.isBefore(firstOfCurrentMonth)) {
-                            previousMonthTransactions.append(line).append("\n");
+                            previousMonthTransactions.append(transaction).append("\n");
                         }
                     } catch (DateTimeParseException e) {
-                        System.out.println("Invalid entry " + parts[0]); }
+                        System.out.println("Invalid entry " + info[0]); }
                 }
             }
              if (previousMonthTransactions.length() > 0) {   // output
-                System.out.println("Transactions for " + firstOfPreviousMonth.getMonth() + " " + firstOfPreviousMonth.getYear() + ":");
+                System.out.println("Transactions for " + firstOfPreviousMonth.getMonth() + " " + firstOfPreviousMonth.getYear() + ":"); // getting month and year
                 System.out.println(previousMonthTransactions.toString());
             } else {
                 System.out.println("No previous month transactions " + firstOfPreviousMonth.getMonth() + " " + firstOfPreviousMonth.getYear() + "."); }
@@ -80,18 +158,18 @@ public class Transactions {
     public void displayYearToDate() {
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         Map<Integer, StringBuilder> yearTransactions = new HashMap<>(); // will only work using Map
-        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                String[] parts = line.split("\\|");
-                if (parts.length == 5) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(storeFile))) {
+            String transaction;
+            while ((transaction = reader.readLine()) != null) {
+                String[] info = transaction.split("\\|");
+                if (info.length == 5) {
                     try {
-                        LocalDate transactionDate = LocalDate.parse(parts[0], dateFormatter);
+                        LocalDate transactionDate = LocalDate.parse(info[0], dateFormatter);
                         int year = transactionDate.getYear();
                         yearTransactions.putIfAbsent(year, new StringBuilder());
-                        yearTransactions.get(year).append(line).append("\n");
+                        yearTransactions.get(year).append(transaction).append("\n");
                     } catch (DateTimeParseException e) {
-                        System.out.println("Invalid entry " + parts[0]);
+                        System.out.println("Invalid entry " + info[0]);
                     }
                 }
             }
@@ -110,14 +188,14 @@ public class Transactions {
            LocalDate lastDayOfPreviousYear = today.minusYears(1).with(TemporalAdjusters.lastDayOfYear());
            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
            try (BufferedReader reader = new BufferedReader(new FileReader("src/transactions.csv"))) {
-               String line;
-               while ((line = reader.readLine()) != null) {
-                   String[] parts = line.split("\\|");
-                   if (parts.length == 5) {
-                       LocalDate transactionDate = LocalDate.parse(parts[0], formatter);
+               String transaction;
+               while ((transaction = reader.readLine()) != null) {
+                   String[] info = transaction.split("\\|");
+                   if (info.length == 5) {
+                       LocalDate transactionDate = LocalDate.parse(info[0], formatter);
                        if (!transactionDate.isBefore(firstDayOfPreviousYear) &&
                        !transactionDate.isAfter(lastDayOfPreviousYear)){
-                           System.out.println(line); }
+                           System.out.println(transaction); }
                    }
                }
            } catch (IOException e) {
@@ -130,10 +208,10 @@ public class Transactions {
         System.out.println("Enter vendor: ");
         String vendor = scanner.nextLine();
         try (BufferedReader reader = new BufferedReader(new FileReader("src/transactions.csv"))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                if (line.contains(vendor)) { // specifically asking for vendor
-                    System.out.println(line);
+            String transaction;
+            while ((transaction = reader.readLine()) != null) {
+                if (transaction.contains(vendor)) { // specifically asking for vendor
+                    System.out.println(transaction);
                 }
             }
         } catch (IOException e) {
