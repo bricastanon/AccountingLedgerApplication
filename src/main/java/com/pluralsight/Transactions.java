@@ -121,6 +121,7 @@ public class Transactions {
             e.printStackTrace();
         }
     }
+    // doing same thing as before copy and update info from above
     public void displayPreviousMonth() {
         LocalDate today = LocalDate.now();
         LocalDate firstOfPreviousMonth = today.minusMonths(1).withDayOfMonth(1);
@@ -155,6 +156,7 @@ public class Transactions {
             e.printStackTrace();
         }
     }
+    // doing same thing as before copy and update info from above
     public void displayYearToDate() {
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         Map<Integer, StringBuilder> yearTransactions = new HashMap<>(); // will only work using Map
@@ -182,6 +184,7 @@ public class Transactions {
             e.printStackTrace();
         }
     }
+    // doing same thing as before copy and update info from above
        public void displayPreviousYear() {
            LocalDate today = LocalDate.now();
            LocalDate firstDayOfPreviousYear = today.minusYears(1).with(TemporalAdjusters.firstDayOfYear());
