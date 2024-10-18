@@ -25,7 +25,7 @@ public class Transactions {
         String amount = scanner.nextLine();
         String transaction = dateTime + "|" + description + "|" + vendor + "|$" + amount;
         String fileName = "src/transactions.csv";
-        // Youtube - tried so mnay different ways wouldn't work until I appended true (to add to the existing file w/o deleting old info
+        // Youtube - tried so many different ways wouldn't work until I appended true (to add to the existing file w/o deleting old info
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, true))) {
             writer.write(transaction);
             writer.newLine();
