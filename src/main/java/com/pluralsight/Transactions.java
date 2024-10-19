@@ -121,7 +121,7 @@ public class Transactions {
             e.printStackTrace();
         }
     }
-    // doing same thing as before copy and update info from above
+    // doing same thing as before copy and update info from above ^^
     public void displayPreviousMonth() {
         LocalDate today = LocalDate.now();
         LocalDate firstOfPreviousMonth = today.minusMonths(1).withDayOfMonth(1);
@@ -141,8 +141,9 @@ public class Transactions {
                                 transactionDate.isBefore(firstOfCurrentMonth)) {
                             previousMonthTransactions.append(transaction).append("\n");
                         }
-                    } catch (DateTimeParseException e) {
-                        System.out.println("Invalid entry " + info[0]); }
+                          } catch (DateTimeParseException e) {
+                         System.out.println("Invalid entry " + info[0]); }
+
                 }
             }
             if (previousMonthTransactions.length() > 0) {   // output
@@ -159,7 +160,8 @@ public class Transactions {
     // doing same thing as before copy and update info from above
     public void displayYearToDate() {
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        Map<Integer, StringBuilder> yearTransactions = new HashMap<>(); // will only work using Map
+        Map<Integer, StringBuilder> yearTransactions = new HashMap<>();
+        // will only work using Map doing the same as before with Month to date ^^^
         try (BufferedReader reader = new BufferedReader(new FileReader(storeFile))) {
             String transaction;
             while ((transaction = reader.readLine()) != null) {
@@ -177,7 +179,7 @@ public class Transactions {
             }
             for (Map.Entry<Integer, StringBuilder> entry : yearTransactions.entrySet()) {  // Output
                 System.out.println("Transactions for " + entry.getKey());
-                System.out.println(entry.getValue().toString());
+                System.out.println(entry.getValue().toString());  // all same as before with month to date ^^^
             }
         } catch (IOException e) {
             System.out.println("Error with file ");
